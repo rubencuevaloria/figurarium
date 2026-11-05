@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Botella de Klein · Figurarium</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
+<style>
+  :root{--navy:#14306b;--ink:#1c2740;--muted:#5b6782;--orange:#f39a1e;--bg:#f6f7fb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  body{display:flex;flex-direction:column}
+  header{padding:16px 18px 6px}
+  .brand{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--navy)}
+  h1{font-size:clamp(22px,6vw,32px);color:var(--navy);margin-top:4px}
+  .meta{font-size:13px;color:var(--muted);margin-top:2px}
+  model-viewer{flex:1;width:100%;min-height:58vh;--poster-color:transparent;background:radial-gradient(ellipse at 50% 45%,#ffffff 0%,var(--bg) 70%)}
+  .ar-btn{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:var(--orange);color:#fff;border:none;border-radius:999px;padding:14px 22px;font:700 16px system-ui,sans-serif;box-shadow:0 6px 18px rgba(243,154,30,.4);cursor:pointer;white-space:nowrap}
+  .no-ar{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font-size:13px;color:var(--muted);background:#fff;padding:8px 14px;border-radius:999px;display:none;white-space:nowrap}
+  model-viewer:not([ar-status]) .no-ar{display:none}
+  section{padding:14px 18px 26px;max-width:640px;margin:0 auto;line-height:1.5;font-size:15px}
+  section h2{font-size:15px;color:var(--navy);margin:12px 0 4px}
+  .legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin:6px 0}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+  .help{font-size:13px;color:var(--muted);background:#fff;border-radius:12px;padding:10px 12px;margin-top:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">FIGURARIUM · SIGLO XIX</div>
+  <h1>La botella de Klein</h1>
+  <div class="meta">Topología · Felix Klein, 1882</div>
+</header>
+
+<model-viewer id="mv" src="klein.glb" alt="Botella de Klein de vidrio ámbar en 3D"
+  ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
+  camera-controls auto-rotate rotation-per-second="20deg" touch-action="pan-y"
+  shadow-intensity="1" exposure="1.05" camera-orbit="35deg 75deg auto">
+  <button slot="ar-button" class="ar-btn">Ver en mi mesa</button>
+</model-viewer>
+
+<section>
+  <h2>¿Qué estás viendo?</h2>
+  <p>Una superficie cerrada <b>de una sola cara</b>. Si una hormiga camina sobre ella, llega al "otro lado" sin cruzar ningún borde. No tiene adentro ni afuera.</p>
+  <p>Sigue el cuello con la vista: sale por arriba, se curva, atraviesa la pared y baja por dentro hasta abrirse en el fondo, donde se une con la superficie exterior. Lo que era "afuera" se convirtió en "adentro" sin cruzar ningún borde.</p>
+  <h2>¿Por qué se atraviesa a sí misma?</h2>
+  <p>En tres dimensiones no se puede construir sin que el cuello cruce la pared. La botella ideal, sin cruces, solo existe en <b>cuatro dimensiones</b>.</p>
+  <div class="help" id="help">Toca <b>Ver en mi mesa</b> y apunta la cámara al piso o a una mesa. En iPhone se abre el visor de realidad aumentada de Apple.</div>
+</section>
+
+<script>
+  const mv = document.getElementById('mv');
+  mv.addEventListener('load', () => {
+    if (!mv.canActivateAR) {
+      document.getElementById('help').innerHTML = 'Este dispositivo no admite realidad aumentada. Abre esta página desde un celular para ver la figura sobre tu mesa. Aquí puedes girarla con el dedo o el ratón.';
+    }
+  });
+</script>
+</body>
+</html>
