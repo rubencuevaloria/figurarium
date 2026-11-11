@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figurarium · Donde las matemáticas salen del papel</title>
+<style>
+  :root{--navy:#14306b;--ink:#1c2740;--muted:#5b6782;--orange:#f39a1e;--bg:#f6f7fb;--intro:#efeee9}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  /* Intro con la animacion del logo */
+  #intro{position:fixed;inset:0;z-index:20;background:var(--intro);display:flex;align-items:center;justify-content:center;transition:opacity .8s ease}
+  #intro.fuera{opacity:0;pointer-events:none}
+  #intro video{width:100%;max-width:960px;max-height:100%;object-fit:contain}
+  #saltar{position:absolute;right:16px;bottom:max(20px,env(safe-area-inset-bottom));background:rgba(20,48,107,.85);color:#fff;border:none;border-radius:999px;padding:10px 18px;font:600 14px system-ui,sans-serif;cursor:pointer}
+  main{max-width:640px;margin:0 auto;padding:28px 20px 60px}
+  .logo{display:block;width:150px;margin:0 auto 6px}
+  h1{font-size:clamp(34px,10vw,52px);color:var(--navy);letter-spacing:.04em;text-align:center}
+  .sub{font-size:18px;color:var(--muted);margin-top:2px;text-align:center}
+  p.intro{margin:22px 0 28px}
+  h2{font-size:13px;letter-spacing:.14em;color:var(--navy);margin:26px 0 10px}
+  a.pieza{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;text-decoration:none;color:var(--ink);box-shadow:0 2px 10px rgba(20,48,107,.08)}
+  a.pieza b{color:var(--navy)}
+  a.pieza span{font-size:13px;color:var(--muted)}
+  a.pieza .ir{color:var(--orange);font-weight:700;font-size:20px}
+  .pronto{font-size:14px;color:var(--muted);margin-top:18px}
+  .ver{display:block;margin:30px auto 0;background:none;border:1px solid rgba(20,48,107,.25);color:var(--navy);border-radius:999px;padding:8px 16px;font:600 13px system-ui,sans-serif;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="intro">
+  <video id="vid" src="intro.mp4" poster="intro-final.jpg" muted playsinline autoplay preload="auto"></video>
+  <button id="saltar">Entrar</button>
+</div>
+
+<main>
+  <img class="logo" src="logo.png" alt="Logo de Figurarium: un icosaedro que sale de un libro abierto">
+  <h1>FIGURARIUM</h1>
+  <div class="sub">Donde las matemáticas salen del papel</div>
+  <p class="intro">Un museo de figuras matemáticas en realidad aumentada, ordenado a lo largo de la historia. Escanea el código QR de cada página del libro para ver la figura sobre tu mesa.</p>
+
+  <h2>ANTIGÜEDAD</h2>
+  <a class="pieza" href="platonicos">
+    <div><b>Los sólidos platónicos</b><br><span>Geometría · Platón, hacia 360 a.C.</span></div>
+    <div class="ir">›</div>
+  </a>
+  <a class="pieza" href="conicas">
+    <div><b>Las secciones cónicas</b><br><span>Cónicas · Apolonio de Perga, hacia 200 a.C.</span></div>
+    <div class="ir">›</div>
+  </a>
+
+  <h2>SIGLO XIX</h2>
+  <a class="pieza" href="klein">
+    <div><b>La botella de Klein</b><br><span>Topología · Felix Klein, 1882</span></div>
+    <div class="ir">›</div>
+  </a>
+
+  <p class="pronto">Próximamente: 7 piezas más.</p>
+  <button class="ver" id="otraVez">Ver la animación otra vez</button>
+</main>
+
+<script>
+  (function(){
+    const intro=document.getElementById('intro'), vid=document.getElementById('vid');
+    let cerrada=false;
+    function cerrar(){ if(cerrada) return; cerrada=true; intro.classList.add('fuera'); setTimeout(()=>{intro.style.display='none';},850); }
+    function abrir(){ cerrada=false; intro.style.display='flex'; intro.classList.remove('fuera'); try{vid.currentTime=0; vid.play();}catch(e){} }
+    // Solo se muestra la primera vez en esta visita
+    let vista=false; try{ vista=sessionStorage.getItem('figIntro')==='1'; sessionStorage.setItem('figIntro','1'); }catch(e){}
+    if(vista){ intro.style.display='none'; cerrada=true; }
+    vid.addEventListener('ended',()=>setTimeout(cerrar,600));
+    vid.addEventListener('error',cerrar);
+    document.getElementById('saltar').addEventListener('click',cerrar);
+    document.getElementById('otraVez').addEventListener('click',abrir);
+    setTimeout(()=>{ if(!cerrada && vid.paused && vid.currentTime===0) cerrar(); },4000); // si el navegador bloquea el video
+  })();
+</script>
+</body>
+</html>

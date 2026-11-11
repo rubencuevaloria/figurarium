@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secciones cónicas · Figurarium</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.4.0/dist/model-viewer.min.js"></script>
+<style>
+  :root{--navy:#14306b;--ink:#1c2740;--muted:#5b6782;--orange:#f39a1e;--bg:#f6f7fb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  body{display:flex;flex-direction:column}
+  header{padding:16px 18px 6px}
+  .brand{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--navy)}
+  h1{font-size:clamp(22px,6vw,32px);color:var(--navy);margin-top:4px}
+  .meta{font-size:13px;color:var(--muted);margin-top:2px}
+  model-viewer{flex:1;width:100%;min-height:62vh;--poster-color:transparent;background:radial-gradient(ellipse at 50% 45%,#ffffff 0%,var(--bg) 70%)}
+  .ar-btn{position:absolute;right:12px;bottom:18px;background:var(--orange);color:#fff;border:none;border-radius:999px;padding:14px 22px;font:700 16px system-ui,sans-serif;box-shadow:0 6px 18px rgba(243,154,30,.4);cursor:pointer;white-space:nowrap}
+  .no-ar{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font-size:13px;color:var(--muted);background:#fff;padding:8px 14px;border-radius:999px;display:none;white-space:nowrap}
+  model-viewer:not([ar-status]) .no-ar{display:none}
+  .ctrl{position:absolute;left:12px;bottom:14px;display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:5px;z-index:5}
+  .ctrl button{width:40px;height:40px;border-radius:50%;border:none;background:rgba(20,48,107,.88);color:#fff;font:700 18px system-ui,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;touch-action:manipulation}
+  .ctrl button.play{background:var(--orange)}
+  .ctrl .e{visibility:hidden}
+  section{padding:14px 18px 26px;max-width:640px;margin:0 auto;line-height:1.5;font-size:15px}
+  section h2{font-size:15px;color:var(--navy);margin:12px 0 4px}
+  .legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin:6px 0}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+  .help{font-size:13px;color:var(--muted);background:#fff;border-radius:12px;padding:10px 12px;margin-top:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">FIGURARIUM · ANTIGÜEDAD</div>
+  <h1>Las secciones cónicas</h1>
+  <div class="meta">Cónicas · Apolonio de Perga, hacia 200 a.C.</div>
+</header>
+
+<model-viewer id="mv" src="conicas.glb" alt="Cono doble cortado por cuatro planos: círculo, elipse, parábola e hipérbola"
+  ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
+  shadow-intensity="0.01" camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" autoplay touch-action="pan-y"
+  exposure="1.05" camera-orbit="35deg 75deg auto">
+  <div class="ctrl">
+    <span class="e"></span><button data-r="0,-30" aria-label="Voltear hacia arriba">↑</button><span class="e"></span>
+    <button data-r="-30,0" aria-label="Girar a la izquierda">←</button><button class="play" id="pp" aria-label="Pausar o girar">❚❚</button><button data-r="30,0" aria-label="Girar a la derecha">→</button>
+    <span class="e"></span><button data-r="0,30" aria-label="Voltear hacia abajo">↓</button><button id="rs" aria-label="Volver a la posición inicial">⟲</button>
+  </div>
+  <button slot="ar-button" class="ar-btn">Ver en mi mesa</button>
+</model-viewer>
+
+<section>
+  <h2>¿Qué estás viendo?</h2>
+  <p>Un cono doble cortado por cuatro planos. Según la inclinación del corte, aparece una curva distinta:</p>
+  <div class="legend" style="flex-wrap:wrap"><span><i class="dot" style="background:#d9381e"></i>círculo</span><span><i class="dot" style="background:#f2b705"></i>elipse</span><span><i class="dot" style="background:#3a9b3f"></i>parábola</span><span><i class="dot" style="background:#2763c9"></i>hipérbola</span></div>
+  <p><b>Círculo:</b> el plano corta horizontal. <b>Elipse:</b> se inclina un poco. <b>Parábola:</b> queda paralelo a una línea del cono. <b>Hipérbola:</b> se inclina tanto que corta las dos hojas y da dos ramas.</p>
+  <h2>¿Quién les dio nombre?</h2>
+  <p>Apolonio de Perga escribió <i>Las cónicas</i>, en ocho libros. Él usó los nombres elipse, parábola e hipérbola, que seguimos usando hoy.</p>
+  <h2>¿Dónde aparecen?</h2>
+  <p>Los planetas giran en elipses (Kepler, 1609). Una pelota lanzada describe casi una parábola, y las antenas parabólicas concentran la señal en un punto.</p>
+  <div class="help" id="help">Toca <b>Ver en mi mesa</b> y apunta la cámara al piso o a una mesa. En iPhone se abre el visor de realidad aumentada de Apple.</div>
+</section>
+
+<script>
+  const mv = document.getElementById('mv');
+  mv.addEventListener('load', () => {
+    if (!mv.canActivateAR) {
+      document.getElementById('help').innerHTML = 'Este dispositivo no admite realidad aumentada. Abre esta página desde un celular para ver la figura sobre tu mesa. Aquí puedes girarla con el dedo o el ratón.';
+    }
+  });
+</script>
+<script>
+  // Controles propios: pausar/reanudar la animacion y voltear la figura en cualquier direccion.
+  // Funcionan en la pagina y dentro de la realidad aumentada (Android).
+  (function(){
+    const mv=document.getElementById('mv'), pp=document.getElementById('pp');
+    let yaw=0, pitch=0, roll=0;
+    const apply=()=>{mv.orientation=`${roll}deg ${pitch}deg ${yaw}deg`;};
+    const setPlay=(on)=>{ if(on){mv.play();pp.textContent='❚❚';} else {mv.pause();pp.textContent='▶';} };
+    pp.addEventListener('click',e=>{e.stopPropagation();setPlay(mv.paused);});
+    document.querySelectorAll('.ctrl [data-r]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); setPlay(false);
+      const [dy,dp]=b.dataset.r.split(',').map(Number);
+      if(dy){yaw+=dy;} else {pitch+=dp;}
+      apply();
+    }));
+    document.getElementById('rs').addEventListener('click',e=>{e.stopPropagation();yaw=pitch=roll=0;apply();mv.currentTime=0;setPlay(true);});
+  })();
+</script>
+</body>
+</html>
