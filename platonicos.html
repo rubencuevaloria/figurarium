@@ -14,10 +14,14 @@
   .brand{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--navy)}
   h1{font-size:clamp(22px,6vw,32px);color:var(--navy);margin-top:4px}
   .meta{font-size:13px;color:var(--muted);margin-top:2px}
-  model-viewer{flex:1;width:100%;min-height:58vh;--poster-color:transparent;background:radial-gradient(ellipse at 50% 45%,#ffffff 0%,var(--bg) 70%)}
-  .ar-btn{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:var(--orange);color:#fff;border:none;border-radius:999px;padding:14px 22px;font:700 16px system-ui,sans-serif;box-shadow:0 6px 18px rgba(243,154,30,.4);cursor:pointer;white-space:nowrap}
+  model-viewer{flex:1;width:100%;min-height:62vh;--poster-color:transparent;background:radial-gradient(ellipse at 50% 45%,#ffffff 0%,var(--bg) 70%)}
+  .ar-btn{position:absolute;right:12px;bottom:18px;background:var(--orange);color:#fff;border:none;border-radius:999px;padding:14px 22px;font:700 16px system-ui,sans-serif;box-shadow:0 6px 18px rgba(243,154,30,.4);cursor:pointer;white-space:nowrap}
   .no-ar{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font-size:13px;color:var(--muted);background:#fff;padding:8px 14px;border-radius:999px;display:none;white-space:nowrap}
   model-viewer:not([ar-status]) .no-ar{display:none}
+  .ctrl{position:absolute;left:12px;bottom:14px;display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:5px;z-index:5}
+  .ctrl button{width:40px;height:40px;border-radius:50%;border:none;background:rgba(20,48,107,.88);color:#fff;font:700 18px system-ui,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;touch-action:manipulation}
+  .ctrl button.play{background:var(--orange)}
+  .ctrl .e{visibility:hidden}
   section{padding:14px 18px 26px;max-width:640px;margin:0 auto;line-height:1.5;font-size:15px}
   section h2{font-size:15px;color:var(--navy);margin:12px 0 4px}
   .legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin:6px 0}
@@ -34,8 +38,13 @@
 
 <model-viewer id="mv" src="platonicos.glb" alt="Los cinco sólidos platónicos girando"
   ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
-  camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" autoplay touch-action="pan-y"
+  shadow-intensity="0.01" camera-controls min-camera-orbit="auto 0deg auto" max-camera-orbit="auto 180deg auto" autoplay touch-action="pan-y"
   exposure="1.05" camera-orbit="35deg 75deg auto">
+  <div class="ctrl">
+    <span class="e"></span><button data-r="0,-30" aria-label="Voltear hacia arriba">↑</button><span class="e"></span>
+    <button data-r="-30,0" aria-label="Girar a la izquierda">←</button><button class="play" id="pp" aria-label="Pausar o girar">❚❚</button><button data-r="30,0" aria-label="Girar a la derecha">→</button>
+    <span class="e"></span><button data-r="0,30" aria-label="Voltear hacia abajo">↓</button><button id="rs" aria-label="Volver a la posición inicial">⟲</button>
+  </div>
   <button slot="ar-button" class="ar-btn">Ver en mi mesa</button>
 </model-viewer>
 
@@ -56,6 +65,24 @@
       document.getElementById('help').innerHTML = 'Este dispositivo no admite realidad aumentada. Abre esta página desde un celular para ver la figura sobre tu mesa. Aquí puedes girarla con el dedo o el ratón.';
     }
   });
+</script>
+<script>
+  // Controles propios: pausar/reanudar la animacion y voltear la figura en cualquier direccion.
+  // Funcionan en la pagina y dentro de la realidad aumentada (Android).
+  (function(){
+    const mv=document.getElementById('mv'), pp=document.getElementById('pp');
+    let yaw=0, pitch=0, roll=0;
+    const apply=()=>{mv.orientation=`${roll}deg ${pitch}deg ${yaw}deg`;};
+    const setPlay=(on)=>{ if(on){mv.play();pp.textContent='❚❚';} else {mv.pause();pp.textContent='▶';} };
+    pp.addEventListener('click',e=>{e.stopPropagation();setPlay(mv.paused);});
+    document.querySelectorAll('.ctrl [data-r]').forEach(b=>b.addEventListener('click',e=>{
+      e.stopPropagation(); setPlay(false);
+      const [dy,dp]=b.dataset.r.split(',').map(Number);
+      if(dy){yaw+=dy;} else {pitch+=dp;}
+      apply();
+    }));
+    document.getElementById('rs').addEventListener('click',e=>{e.stopPropagation();yaw=pitch=roll=0;apply();mv.currentTime=0;setPlay(true);});
+  })();
 </script>
 </body>
 </html>
